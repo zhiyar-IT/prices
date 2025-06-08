@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Prices - MedBook</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #005BAA;
+            --secondary: #008080;
+            --accent: #FF6B6B;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header .logo h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* Dropdown Menu Styles */
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            position: relative;
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            list-style: none;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .dropdown-menu li {
+            padding: 10px 20px;
+        }
+
+        .dropdown-menu li a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-menu li a:hover {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #005BAA, #008080);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            margin-bottom: 40px;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .hero .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .hero .btn-primary:hover {
+            background-color: #FF4B4B;
+        }
+
+        .prices-section {
+            padding: 60px 0;
+        }
+
+        .prices-section h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .tab-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tab-button:hover {
+            background-color: #004494;
+        }
+
+        .tab-button.active {
+            background-color: var(--secondary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .price-table th, .price-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .price-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: bold;
+        }
+
+        .price-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .faq-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 40px;
+        }
+
+        .faq {
+            margin-bottom: 20px;
+        }
+
+        .faq h3 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .faq p {
+            display: none;
+            color: var(--gray);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .summary-section {
+            padding: 40px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .summary-section h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .summary-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        .summary-section ul li {
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .summary-section p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .summary-section .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .summary-section .btn-primary:hover {
+            background-color: #004494;
+        }
+
+        #bankDetails {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+
+        #bankDetails p {
+            margin: 5px 0;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer .social-links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        footer .social-links li a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        footer .social-links li a:hover {
+            color: var(--primary);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .modal-content input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .modal-content .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .modal-content .btn-primary:hover {
+            background-color: #004494;
+        }
+
+        #financialAssistance {
+            margin-top: 40px;
+            padding: 40px 0;
+            background-color: #f9f9f9;
+        }
+
+        #financialAssistance h2 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        #financialAssistance p {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        #assistanceForm {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #assistanceForm label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        #assistanceForm input, #assistanceForm textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        #assistanceForm button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #assistanceForm button:hover {
+            background-color: #004494;
+        }
+
+        #assistanceMessage {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.4.1/dist/email.min.js"></script>
+    <script>
+        (function () {
+            emailjs.init("7N9vp2UJ5sUY7COKT"); // Replace with your actual Public Key
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-calendar-check medical-icon"></i>
+                <h1>Med<span>Book</span></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.htmlhomemedbook.html">Home</a></li>
+                    <li><a href="hospital-prices.html" class="active">Prices</a></li>
+                    <li><a href="doctor-schedule.html">Doctors</a></li>
+                    <li><a href="doctor-schedule.html" class="btn-login">Login</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">About Us <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" id="presidentInfo">President of the Hospital</a></li>
+                            <li><a href="#" id="engineerInfo">website</a></li>
+                            <li><a href="#" id="transferMoney">zhiyar's bank personal account</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h2>Affordable Healthcare Services</h2>
+        <p>Explore our transparent pricing for all hospital services.</p>
+        <a href="#prices" class="btn-primary">View Prices</a>
+    </section>
+
+    <!-- Prices Section -->
+    <section class="prices-section" id="prices">
+        <div class="container">
+            <h2>Hospital Services and Prices</h2>
+            <div class="tabs">
+                <button class="tab-button active" data-tab="consultations">Consultations</button>
+                <button class="tab-button" data-tab="tests">Tests</button>
+                <button class="tab-button" data-tab="surgeries">Surgeries</button>
+            </div>
+            <div class="tab-content active" id="consultations">
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Service</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="service-checkbox" data-price="50"></td>
+                            <td>General Consultation</td>
+                            <td>Consultation with a general physician</td>
+                            <td>$50</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="service-checkbox" data-price="150"></td>
+                            <td>Cardiology Checkup</td>
+                            <td>Heart health checkup with a cardiologist</td>
+                            <td>$150</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="service-checkbox" data-price="100"></td>
+                            <td>Pediatrics Consultation</td>
+                            <td>Consultation with a pediatrician</td>
+                            <td>$100</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="calculateButton" class="btn-primary">Calculate Total</button>
+            </div>
+            <div class="tab-content" id="tests">
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Blood Test</td>
+                            <td>Comprehensive blood test</td>
+                            <td>$30</td>
+                        </tr>
+                        <tr>
+                            <td>MRI Scan</td>
+                            <td>Magnetic Resonance Imaging scan for detailed diagnostics</td>
+                            <td>$500</td>
+                        </tr>
+                        <tr>
+                            <td>X-Ray</td>
+                            <td>Standard X-Ray imaging for bones and joints</td>
+                            <td>$100</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-content" id="surgeries">
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Appendectomy</td>
+                            <td>Surgical removal of the appendix</td>
+                            <td>$3,000</td>
+                        </tr>
+                        <tr>
+                            <td>Gallbladder Removal</td>
+                            <td>Surgical removal of the gallbladder</td>
+                            <td>$4,500</td>
+                        </tr>
+                        <tr>
+                            <td>Knee Replacement</td>
+                            <td>Replacement of the knee joint</td>
+                            <td>$10,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary Section -->
+    <section class="summary-section">
+        <div class="container">
+            <h2>Summary</h2>
+            <ul id="selectedServices"></ul>
+            <p><strong>Total Price:</strong> $<span id="totalPrice">0</span></p>
+            <p><strong>Discount:</strong> $<span id="discount">0</span></p>
+            <p><strong>Final Price:</strong> $<span id="finalPrice">0</span></p>
+            <button id="calculateButton" class="btn-primary">Calculate Total</button>
+            <button id="transferButton" class="btn-primary" style="display: none;">Transfer Money</button>
+            <div id="bankDetails" style="display: none; margin-top: 20px;">
+                <p><strong>Bank Name:</strong> Zhiyar Engineers Bank</p>
+                <p><strong>Account Number:</strong> 123456789</p>
+                <p><strong>IBAN:</strong> ZHIYARENG123456789</p>
+                <p><strong>SWIFT Code:</strong> ZHIYARBANK</p>
+                <p><strong>Note:</strong> Please include your name and service details in the transfer description.</p>
+            </div>
+            <div id="confirmationMessage" style="display: none; text-align: center; margin-top: 20px;">
+                <p style="color: green; font-weight: bold;">Money transferred successfully!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Financial Assistance Section -->
+    <section id="financialAssistance" style="margin-top: 40px; padding: 40px 0; background-color: #f9f9f9;">
+        <div class="container">
+            <h2 style="text-align: center; color: var(--primary);">Financial Assistance for Patients in Need</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: var(--dark);">
+                If you are unable to afford medical services, please fill out the form below to request financial assistance.
+            </p>
+            <form id="assistanceForm" style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+                <div style="margin-bottom: 15px;">
+                    <label for="patientName" style="display: block; font-weight: bold; margin-bottom: 5px;">Full Name</label>
+                    <input type="text" id="patientName" name="patientName" placeholder="Enter your full name" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="patientEmail" style="display: block; font-weight: bold; margin-bottom: 5px;">Email Address</label>
+                    <input type="email" id="patientEmail" name="patientEmail" placeholder="Enter your email address" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="patientReason" style="display: block; font-weight: bold; margin-bottom: 5px;">Reason for Assistance</label>
+                    <textarea id="patientReason" name="patientReason" placeholder="Explain why you need financial assistance" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; height: 100px;"></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 10px; font-size: 1rem;">Submit Request</button>
+            </form>
+            <div id="assistanceMessage" style="display: none; text-align: center; margin-top: 20px; color: green; font-weight: bold;">
+                Your request has been submitted. We will contact you soon.
+            </div>
+        </div>
+    </section>
+
+    <!-- Engineer Dashboard Section -->
+    <section id="engineerDashboard" style="display: none; margin-top: 20px; text-align: center;">
+        <h2>Zhiyar Engineer's Dashboard</h2>
+        <p><strong>Current Balance:</strong> $<span id="engineerBalance">0.00</span></p>
+    </section>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Enter Password</h2>
+            <input type="password" id="passwordInput" placeholder="Enter Password" />
+            <button id="submitPassword" class="btn-primary">Submit</button>
+            <p id="passwordError" style="color: red; display: none;">Incorrect password. Please try again.</p>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq">
+                <h3>What payment methods do you accept?</h3>
+                <p>We accept cash, credit cards, and insurance payments.</p>
+            </div>
+            <div class="faq">
+                <h3>Are there any discounts available?</h3>
+                <p>Yes, we offer discounts for senior citizens and students.</p>
+            </div>
+            <div class="faq">
+                <h3>Do you accept insurance?</h3>
+                <p>Yes, we accept most major insurance providers. Please contact us for more details.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Requests Table Section -->
+    <section id="requestsTableSection" style="margin-top: 40px; padding: 40px 0; background-color: #f9f9f9;">
+        <div class="container">
+            <h2 style="text-align: center; color: var(--primary);">Assistance Requests</h2>
+            <table id="requestsTable" class="price-table">
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Email</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Requests will be dynamically loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Status Tracker Section -->
+    <section id="statusTracker" style="margin-top: 40px; padding: 40px 0; background-color: #f9f9f9;">
+        <div class="container">
+            <h2 style="text-align: center; color: var(--primary);">Track Your Request</h2>
+            <form id="statusForm" style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+                <div style="margin-bottom: 15px;">
+                    <label for="trackerEmail" style="display: block; font-weight: bold; margin-bottom: 5px;">Email Address</label>
+                    <input type="email" id="trackerEmail" name="trackerEmail" placeholder="Enter your email address" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 10px; font-size: 1rem;">Track Request</button>
+            </form>
+            <div id="statusMessage" style="display: none; text-align: center; margin-top: 20px; color: var(--dark); font-weight: bold;"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <ul class="social-links">
+                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+            </ul>
+            <p>&copy; 2025 MedBook. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq h3').forEach(faqHeader => {
+            faqHeader.addEventListener('click', () => {
+                const faqContent = faqHeader.nextElementSibling;
+                faqContent.style.display = faqContent.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    document.getElementById(button.dataset.tab).classList.add('active');
+                });
+            });
+        });
+
+        // Assistance Form Submission
+        document.addEventListener('DOMContentLoaded', () => {
+            const assistanceForm = document.getElementById('assistanceForm');
+            const assistanceMessage = document.getElementById('assistanceMessage');
+
+            assistanceForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const patientName = document.getElementById('patientName').value;
+                const patientEmail = document.getElementById('patientEmail').value;
+                const patientReason = document.getElementById('patientReason').value;
+
+                if (!patientName || !patientEmail || !patientReason) {
+                    alert('All fields are required.');
+                    return;
+                }
+
+                if (!validateEmail(patientEmail)) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+
+                const requests = JSON.parse(localStorage.getItem('assistanceRequests')) || [];
+                requests.push({ patientName, patientEmail, patientReason, status: 'Pending' });
+                localStorage.setItem('assistanceRequests', JSON.stringify(requests));
+
+                assistanceMessage.style.display = 'block';
+                assistanceForm.reset();
+            });
+
+            function validateEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+        });
+
+        // Load and Manage Requests
+        document.addEventListener('DOMContentLoaded', () => {
+            const requestsTableBody = document.querySelector('#requestsTable tbody');
+
+            function loadRequests() {
+                const requests = JSON.parse(localStorage.getItem('assistanceRequests')) || [];
+
+                requestsTableBody.innerHTML = requests
+                    .map(
+                        (request, index) => `
+                        <tr>
+                            <td>${request.patientName}</td>
+                            <td>${request.patientEmail}</td>
+                            <td>${request.patientReason}</td>
+                            <td>${request.status}</td>
+                            <td>
+                                <button class="btn-primary" onclick="approveRequest(${index})">Approve</button>
+                                <button class="btn-secondary" onclick="rejectRequest(${index})">Reject</button>
+                                <button class="btn-danger" onclick="removeRequest(${index})">Remove</button>
+                            </td>
+                        </tr>
+                    `
+                    )
+                    .join('');
+            }
+
+            window.approveRequest = (index) => {
+                const requests = JSON.parse(localStorage.getItem('assistanceRequests')) || [];
+                requests[index].status = 'Approved';
+                localStorage.setItem('assistanceRequests', JSON.stringify(requests));
+                loadRequests();
+
+                // Generate PDF for the approved request
+                const request = requests[index];
+                generatePDF(request);
+                sendEmailNotification(request, 'approved');
+            };
+
+            window.rejectRequest = (index) => {
+                const requests = JSON.parse(localStorage.getItem('assistanceRequests')) || [];
+                requests[index].status = 'Rejected';
+                localStorage.setItem('assistanceRequests', JSON.stringify(requests));
+                loadRequests();
+                sendEmailNotification(requests[index], 'rejected');
+            };
+
+            window.removeRequest = (index) => {
+                const requests = JSON.parse(localStorage.getItem('assistanceRequests')) || [];
+                requests.splice(index, 1); // Remove the request at the specified index
+                localStorage.setItem('assistanceRequests', JSON.stringify(requests));
+                loadRequests(); // Reload the table
+                alert('Request removed successfully!');
+            };
+
+            function generatePDF(request) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                // Add content to the PDF
+                doc.setFontSize(16);
+                doc.text('Approval Confirmation', 20, 20);
+                doc.setFontSize(12);
+                doc.text(`Dear ${request.patientName},`, 20, 40);
+                doc.text(
+                    `We are pleased to inform you that your request for financial assistance has been approved.`, 
+                    20, 
+                    50
+                );
+                doc.text(
+                    `Your reason for assistance: "${request.patientReason}" has been reviewed and accepted.`, 
+                    20, 
+                    60
+                );
+                doc.text(
+                    `We are committed to supporting you during this time and ensuring you receive the care you need.`, 
+                    20, 
+                    70
+                );
+                doc.text('Thank you for trusting us.', 20, 90);
+                doc.text('Sincerely,', 20, 110);
+                doc.text('software enginner zhiyar barzani', 20, 120);
+
+                // Save the PDF
+                doc.save(`${request.patientName}_Approval.pdf`);
+                alert('PDF generated and downloaded successfully!');
+            }
+
+            function sendEmailNotification(request, status) {
+                const emailParams = {
+                    patient_name: request.patientName,
+                    patient_email: request.patientEmail,
+                    request_status: status,
+                    reason: request.patientReason,
+                };
+
+                console.log("Sending email with the following parameters:", emailParams);
+
+                emailjs
+                    .send("service_3xtpf8i", "template_rhit3ir", emailParams)
+                    .then(
+                        (response) => {
+                            console.log("Email sent successfully!", response.status, response.text);
+                            alert(`Email sent to ${request.patientEmail}:\n\nYour request has been ${status}.`);
+                        },
+                        (error) => {
+                            console.error("Failed to send email:", error);
+                            alert("Failed to send email. Please try again later.");
+                        }
+                    );
+            }
+
+            loadRequests();
+        });
+
+        // Track Request Status
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusForm = document.getElementById('statusForm');
+            const statusMessage = document.getElementById('statusMessage');
+
+            statusForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const trackerEmail = document.getElementById('trackerEmail').value;
+                const requests = JSON.parse(localStorage.getItem('assistanceRequests')) || [];
+
+                const request = requests.find((req) => req.patientEmail === trackerEmail);
+
+                if (request) {
+                    statusMessage.style.display = 'block';
+                    statusMessage.textContent = `Your request is currently: ${request.status}`;
+                } else {
+                    statusMessage.style.display = 'block';
+                    statusMessage.textContent = 'No request found for this email.';
+                }
+            });
+        });
+
+        // Show loading indicator
+        const loadingIndicator = document.getElementById("loadingIndicator");
+        loadingIndicator.style.display = "block"; // Show the spinner
+    </script>
+</body>
+</html>
